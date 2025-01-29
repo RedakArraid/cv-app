@@ -36,6 +36,11 @@ st.markdown("""
         border-radius: 5px;
         padding: 10px 20px;
         font-size: 16px;
+        margin: 5px;
+    }
+    /* Style pour le bouton actif */
+    .stButton>button.active {
+        background-color: #FF0000; /* Rouge */
     }
     /* Style pour la photo avec des bords arrondis */
     .rounded-img {
@@ -49,18 +54,22 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Sidebar pour la navigation
-st.sidebar.title("Navigation")
-section = st.sidebar.radio("Choisir une section", ["Accueil", "Compétences", "Expériences", "Formations", "Contact"])
+# Initialisation de l'état de la section
+if "section" not in st.session_state:
+    st.session_state.section = "Accueil"
 
-# Section Accueil
-if section == "Accueil":
+# Fonction pour définir la section
+def set_section(section_name):
+    st.session_state.section = section_name
+
+# Afficher la bio et les boutons en permanence
+def display_bio_and_buttons():
     # Utiliser des colonnes pour placer la photo à droite
     col1, col2 = st.columns([3, 1])
     with col1:
         st.title("Khadara Diarrassouba")
         st.markdown('<p class="big-font">Bientôt diplômé en Big Data et IA, je recherche une opportunité en Data Analyst.</p>', unsafe_allow_html=True)
-        st.write("Disponible dès septembre, motivé à transformer les données en valeur.")
+        st.write("Disponible dès septembre, motivé à valoriser vos données.")
     with col2:
         # Afficher la photo avec des bords arrondis en utilisant du HTML/CSS
         st.markdown(
@@ -70,9 +79,41 @@ if section == "Accueil":
             unsafe_allow_html=True
         )
 
-    # Coordonnées
+    # Boutons de navigation
     st.markdown("---")
-    st.header("📌 Coordonnées")
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
+    with col1:
+        # Appliquer le style "active" si la section est "Coordonnées"
+        button_style = "active" if st.session_state.section == "Coordonnées" else ""
+        if st.button("Coordonnées", key="coordonnees"):
+            set_section("Coordonnées")
+    with col2:
+        button_style = "active" if st.session_state.section == "Compétences" else ""
+        if st.button("Compétences", key="competences"):
+            set_section("Compétences")
+    with col3:
+        button_style = "active" if st.session_state.section == "Expériences" else ""
+        if st.button("Expériences", key="experiences"):
+            set_section("Expériences")
+    with col4:
+        button_style = "active" if st.session_state.section == "Formations" else ""
+        if st.button("Formations", key="formations"):
+            set_section("Formations")
+    with col5:
+        button_style = "active" if st.session_state.section == "Contact" else ""
+        if st.button("Contact", key="contact"):
+            set_section("Contact")
+    with col6:
+        button_style = "active" if st.session_state.section == "Télécharger" else ""
+        if st.button("Télécharger", key="telecharger"):
+            set_section("Télécharger")
+
+# Afficher la bio et les boutons en permanence
+display_bio_and_buttons()
+
+# Afficher la section sélectionnée
+if st.session_state.section == "Coordonnées":
+    st.markdown('<p class="section-title">📌 Coordonnées</p>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
         st.write("📞 **Téléphone:** 0766848029")
@@ -82,8 +123,7 @@ if section == "Accueil":
         st.write("[🔗 LinkedIn](https://www.linkedin.com/in/khadara-diarrassouba/)")
         st.write("[🐱 GitHub](https://github.com/RedakArraid)")
 
-# Section Compétences
-elif section == "Compétences":
+elif st.session_state.section == "Compétences":
     st.markdown('<p class="section-title">💻 Compétences</p>', unsafe_allow_html=True)
     
     # Hard Skills
@@ -116,8 +156,7 @@ elif section == "Compétences":
     st.write("- Anglais : B2")
     st.write("- Espagnol : Niveau lycée")
 
-# Section Expériences
-elif section == "Expériences":
+elif st.session_state.section == "Expériences":
     st.markdown('<p class="section-title">📂 Expériences</p>', unsafe_allow_html=True)
     
     # Alternance
@@ -140,8 +179,7 @@ elif section == "Expériences":
     st.write("- Conception d'un réseau de neurones CNN : Python (TensorFlow)")
     st.write("- Création d'un site web pour analyser les images radios (HTML/CSS/JS)")
 
-# Section Formations
-elif section == "Formations":
+elif st.session_state.section == "Formations":
     st.markdown('<p class="section-title">🎓 Formations</p>', unsafe_allow_html=True)
     
     st.write("**École Centrale d'Électronique de Paris (ECE)**")
@@ -153,8 +191,7 @@ elif section == "Formations":
     st.write("**Institut National Polytechnique Félix Houphouët Boigny (INPHB)**")
     st.write("Ingénieur en exploitation et traitement des eaux | 2017-2022")
 
-# Section Contact
-elif section == "Contact":
+elif st.session_state.section == "Contact":
     st.markdown('<p class="section-title">📧 Contact</p>', unsafe_allow_html=True)
     
     # Formulaire de contact
@@ -166,14 +203,13 @@ elif section == "Contact":
         if submitted:
             st.success(f"Merci {name}, votre message a été envoyé !")
 
-# Télécharger le CV en PDF
-st.sidebar.markdown("---")
-st.sidebar.write("📄 Télécharger mon CV en PDF")
-with open("CvKhadara.pdf", "rb") as pdf_file:
-    PDFbyte = pdf_file.read()
-st.sidebar.download_button(
-    label="Télécharger",
-    data=PDFbyte,
-    file_name="CV_Khadara_Diarrassouba.pdf",
-    mime="application/pdf",
-)
+elif st.session_state.section == "Télécharger":
+    st.markdown('<p class="section-title">📄 Télécharger mon CV en PDF</p>', unsafe_allow_html=True)
+    with open("CvKhadara.pdf", "rb") as pdf_file:
+        PDFbyte = pdf_file.read()
+    st.download_button(
+        label="Télécharger",
+        data=PDFbyte,
+        file_name="CV_Khadara_Diarrassouba.pdf",
+        mime="application/pdf",
+    )
