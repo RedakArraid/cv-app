@@ -128,7 +128,7 @@ elif section == "Contact":
 # Télécharger le CV en PDF
 st.sidebar.markdown("---")
 st.sidebar.write("📄 Télécharger mon CV en PDF")
-with open("CvKhadara-3 (1).pdf", "rb") as pdf_file:
+with open("CvKhadara.pdf", "rb") as pdf_file:
     PDFbyte = pdf_file.read()
 st.sidebar.download_button(
     label="Télécharger",
