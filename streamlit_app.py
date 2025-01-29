@@ -1,11 +1,21 @@
 import streamlit as st
+from PIL import Image
+import base64
+from io import BytesIO
 
 # Configuration de la page
 st.set_page_config(page_title="CV Khadara Diarrassouba", layout="wide", page_icon="📄")
 
-# Sidebar pour la navigation
-st.sidebar.title("Navigation")
-section = st.sidebar.radio("Choisir une section", ["Accueil", "Compétences", "Expériences", "Formations", "Contact"])
+# Charger ta photo
+photo = Image.open("photo-khadara.jpeg")
+
+# Convertir l'image en base64
+def image_to_base64(image):
+    buffered = BytesIO()
+    image.save(buffered, format="JPEG")
+    return base64.b64encode(buffered.getvalue()).decode()
+
+photo_base64 = image_to_base64(photo)
 
 # Style CSS pour améliorer l'apparence
 st.markdown("""
@@ -20,14 +30,45 @@ st.markdown("""
         border-bottom: 2px solid #1E90FF;
         padding-bottom: 5px;
     }
+    .stButton>button {
+        background-color: #1E90FF;
+        color: white;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+    /* Style pour la photo avec des bords arrondis */
+    .rounded-img {
+        border-radius: 50%;
+        border: 3px solid #1E90FF;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+    }
 </style>
 """, unsafe_allow_html=True)
 
+# Sidebar pour la navigation
+st.sidebar.title("Navigation")
+section = st.sidebar.radio("Choisir une section", ["Accueil", "Compétences", "Expériences", "Formations", "Contact"])
+
 # Section Accueil
 if section == "Accueil":
-    st.title("Khadara Diarrassouba")
-    st.markdown('<p class="big-font">Bientôt diplômé en Big Data et IA, je recherche une opportunité en Data Analyst.</p>', unsafe_allow_html=True)
-    st.write("Disponible dès septembre, motivé à transformer les données en valeur.")
+    # Utiliser des colonnes pour placer la photo à droite
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.title("Khadara Diarrassouba")
+        st.markdown('<p class="big-font">Bientôt diplômé en Big Data et IA, je recherche une opportunité en Data Analyst.</p>', unsafe_allow_html=True)
+        st.write("Disponible dès septembre, motivé à transformer les données en valeur.")
+    with col2:
+        # Afficher la photo avec des bords arrondis en utilisant du HTML/CSS
+        st.markdown(
+            f'<div style="display: flex; justify-content: center;">'
+            f'<img src="data:image/jpeg;base64,{photo_base64}" class="rounded-img">'
+            f'</div>',
+            unsafe_allow_html=True
+        )
 
     # Coordonnées
     st.markdown("---")
